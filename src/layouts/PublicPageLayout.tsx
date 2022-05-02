@@ -1,7 +1,49 @@
 import React from "react";
+import Link from "next/link";
+import { PublicDashboardButton } from "@src/components/PublicDashboardButton";
 
-export const PublicPageLayout: React.FC<{ children: React.ReactElement }> = ({
+export const PublicPageLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  return <div>{children}</div>;
+  return (
+    <main>
+      <header className="flex flex-row justify-between py-2 px-4">
+        <div>
+          <Link href="/">
+            <a className="btn btn-ghost">Home</a>
+          </Link>
+          <div className="dropdown ml-4">
+            <label tabIndex={0} htmlFor="" className="btn">
+              Explore
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu shadow bg-stone-800 rounded-box w-52"
+            >
+              <li>
+                <Link href="/tags">
+                  <a>Tags</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/properties">
+                  <a>Properties</a>
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <PublicDashboardButton />
+        </div>
+      </header>
+
+      {children}
+    </main>
+  );
 };
+
+export function applyPublicPageLayout(page: React.ReactNode) {
+  return <PublicPageLayout>{page}</PublicPageLayout>;
+}

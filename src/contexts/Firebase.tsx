@@ -10,7 +10,7 @@ import {
   query,
 } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
-import { getAuth, signInAnonymously } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -28,10 +28,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth();
-
-if (typeof window !== "undefined") {
-  signInAnonymously(auth);
-}
 
 export function useFirestore() {
   return db;

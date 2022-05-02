@@ -1,7 +1,8 @@
 module.exports = {
-  content: ["./src/*.tsx", "./src/**/*.tsx"],
+  darkMode: "class",
+  content: ["./src/**/*.tsx"],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
 };

@@ -14,14 +14,14 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html className="dark bg-slate-900" data-theme="dark">
+      <Html className="dark bg-stone-900" data-theme="dark">
         <Head>
           <meta name="description" content="Neo hackathon" />
           <link rel="icon" href="/favicon.ico" />
-          {/* <link
+          <link
             href="https://fonts.googleapis.com/css2?family=Material+Icons&display=block"
             rel="stylesheet"
-          /> */}
+          />
         </Head>
 
         <body className="dark:text-white w-screen h-screen">
