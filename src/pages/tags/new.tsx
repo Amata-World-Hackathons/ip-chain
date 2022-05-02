@@ -1,4 +1,4 @@
-import FormField from "@src/components/forms/FormField";
+import FormField, { TextareaFormField } from "@src/components/forms/FormField";
 import { useFirestore, useFirestoreCollection } from "@src/contexts/Firebase";
 import { applyPrivatePageLayout } from "@src/layouts/PrivatePageLayout";
 import { AppPage } from "@src/types";
@@ -72,9 +72,8 @@ export const NewTagPage: AppPage = () => {
               }}
             />
 
-            <FormField
+            <TextareaFormField
               name="description"
-              type="textarea"
               label="Description"
               className="mt-4"
               showOptionalLabel

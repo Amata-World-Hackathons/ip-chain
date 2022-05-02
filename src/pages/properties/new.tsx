@@ -6,7 +6,7 @@ import { applyPrivatePageLayout } from "@src/layouts/PrivatePageLayout";
 import { useFirestore } from "@src/contexts/Firebase";
 import { addDoc, collection } from "firebase/firestore";
 import classNames from "classnames";
-import FormField from "@src/components/forms/FormField";
+import FormField, { TextareaFormField } from "@src/components/forms/FormField";
 import { useRouter } from "next/router";
 
 export const NewPropertyPage: AppPage = () => {
@@ -78,9 +78,8 @@ export const NewPropertyPage: AppPage = () => {
               showOptionalLabel
             />
 
-            <FormField
+            <TextareaFormField
               name="description"
-              type="textarea"
               label="Description"
               className="mt-4"
               showOptionalLabel
