@@ -1,6 +1,8 @@
 import { AppPage } from "@src/types";
 import { useFirestoreCollection } from "@src/contexts/Firebase";
 import { Preloader } from "@src/components/progress/Preloader";
+import Link from "next/link";
+import Head from "next/head";
 
 export const PropertiesIndexPage: AppPage = () => {
   const result = useFirestoreCollection("tags");
@@ -11,6 +13,10 @@ export const PropertiesIndexPage: AppPage = () => {
 
   return (
     <div className="flex flex-col items-center">
+      <Head>
+        <title>All tags</title>
+      </Head>
+
       <div className="prose dark:prose-invert">
         <h1>All tags</h1>
       </div>
@@ -32,7 +38,11 @@ export const PropertiesIndexPage: AppPage = () => {
             </figure>
 
             <div className="card-body">
-              <h2 className="card-title">{tag.name}</h2>
+              <h2 className="card-title">
+                <Link href={`/tags/${tag.id}`}>
+                  <a className="hover:underline">{tag.name}</a>
+                </Link>
+              </h2>
               <p>{tag.description || "N/A"}</p>
             </div>
           </div>

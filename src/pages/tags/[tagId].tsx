@@ -1,6 +1,7 @@
 import { Preloader } from "@src/components/progress/Preloader";
 import { useFirestoreDocument } from "@src/contexts/Firebase";
 import { AppPage } from "@src/types";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -16,6 +17,10 @@ export const TagDetailPage: AppPage = () => {
 
   return (
     <div className="w-full max-w-3xl m-auto">
+      <Head>
+        <title>{tag.name} | Tag</title>
+      </Head>
+
       <section className="prose dark:prose-invert">
         <h1>{tag.name}</h1>
 
