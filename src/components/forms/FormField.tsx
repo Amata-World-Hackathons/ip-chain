@@ -8,6 +8,7 @@ import { FieldError, useFormContext, useFormState } from "react-hook-form";
 
 export interface BaseFormFieldProps {
   name: string;
+  hint?: string;
   label?: string;
   inputId?: string;
   className?: string;
@@ -21,6 +22,7 @@ function createFormField<N, T extends HTMLAttributes<N>>(
   inputClassname: string
 ) {
   const FormField: React.FC<BaseFormFieldProps & T> = ({
+    hint,
     name,
     label,
     inputId,
@@ -72,6 +74,10 @@ function createFormField<N, T extends HTMLAttributes<N>>(
             <span className="label-text text-red-500">
               {formatErrors(error)}
             </span>
+          </label>
+        ) : hint ? (
+          <label htmlFor={inputId} className="label">
+            <span className="label-text text-base-content text-xs">{hint}</span>
           </label>
         ) : null}
       </div>

@@ -6,7 +6,7 @@ export const PublicPageLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <main>
+    <main className="pb-24">
       <header className="flex flex-row justify-between py-2 px-4">
         <div>
           <Link href="/">

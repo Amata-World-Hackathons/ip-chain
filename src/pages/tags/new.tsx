@@ -1,4 +1,5 @@
 import FormField, { TextareaFormField } from "@src/components/forms/FormField";
+import { useMustAuth } from "@src/contexts/Auth";
 import { useFirestore, useFirestoreCollection } from "@src/contexts/Firebase";
 import { applyPrivatePageLayout } from "@src/layouts/PrivatePageLayout";
 import { AppPage } from "@src/types";
@@ -12,6 +13,7 @@ export const NewTagPage: AppPage = () => {
   const db = useFirestore();
   const router = useRouter();
   const methods = useForm({ mode: "all" });
+  const { user, profile } = useMustAuth();
   const result = useFirestoreCollection("properties");
   const {
     control,
@@ -41,6 +43,7 @@ export const NewTagPage: AppPage = () => {
 
             const doc = await addDoc(collection(db, "tags"), {
               ...submittedAsIs,
+              userId: user.uid,
               properties: properties.map(({ property }: any) => ({
                 ipChainId: property.id,
                 blockchainAddress: property.id,
@@ -64,6 +67,7 @@ export const NewTagPage: AppPage = () => {
               className="mt-4 max-w-sm"
               name="contentUrl"
               label="Link to content"
+              placeholder="e.g. https://yahoo.com"
               registerOptions={{
                 required: {
                   value: true,
@@ -152,7 +156,7 @@ export const NewTagPage: AppPage = () => {
                           <figure className="w-32 bg-stone-700 overflow-hidden">
                             <img
                               src={
-                                property.storefrontImageUrl ||
+                                property.marketplaceImageUrl ||
                                 "https://via.placeholder.com/300x300/000000/FFFFFF?text=Image+not+available"
                               }
                               alt={`Preview of ${property.name}`}

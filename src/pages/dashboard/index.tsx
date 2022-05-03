@@ -6,7 +6,13 @@ import { AppPage } from "@src/types";
 export const DashboardPage: AppPage = () => {
   return (
     <div className="flex flex-col items-center">
-      <section className="w-full max-w-3xl p-4 border border-primary rounded-lg">
+      <div>
+        <Link href="/account/profile">
+          <a className="btn btn-ghost">Go to profile</a>
+        </Link>
+      </div>
+
+      <section className="mt-8 w-full max-w-3xl p-4 border border-primary rounded-lg">
         <div className="prose dark:prose-invert">
           <h2>Your tags</h2>
         </div>

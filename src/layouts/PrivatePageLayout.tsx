@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { PublicPageLayout } from "./PublicPageLayout";
-import { Preloader } from "@src/components/progress/Preloader";
+import { MustAuthProvider } from "@src/contexts/Auth";
 
 export const PrivatePageLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return <Preloader />;
-
-  return <PublicPageLayout>{children}</PublicPageLayout>;
+  return (
+    <MustAuthProvider>
+      <PublicPageLayout>{children}</PublicPageLayout>
+    </MustAuthProvider>
+  );
 };
 
 export function applyPrivatePageLayout(page: React.ReactNode) {

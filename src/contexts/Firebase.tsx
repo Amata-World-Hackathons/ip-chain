@@ -11,8 +11,11 @@ import {
 } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
+import legacyFirebase from "firebase/compat/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
+
+export { default as legacyFirebase } from "firebase/compat/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -27,7 +30,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth();
+export const firebaseAuth = getAuth();
+
+export const legacyApp = legacyFirebase.initializeApp(firebaseConfig);
 
 export function useFirestore() {
   return db;

@@ -3,6 +3,7 @@ import { useFirestoreCollection } from "@src/contexts/Firebase";
 import { Preloader } from "@src/components/progress/Preloader";
 import Link from "next/link";
 import Head from "next/head";
+import { AddPropertyToListButton } from "@src/components/AddPropertyToListButton";
 
 export const PropertiesIndexPage: AppPage = () => {
   const result = useFirestoreCollection("properties");
@@ -25,12 +26,12 @@ export const PropertiesIndexPage: AppPage = () => {
         {properties.map((property) => (
           <div
             key={property.id}
-            className="card w-96 bg-stone-800 shadow-md shadow-secondary mx-4"
+            className="card w-96 bg-stone-800 shadow-md shadow-primary mx-4"
           >
             <figure>
               <img
                 src={
-                  property.storefrontImageUrl ||
+                  property.marketplaceImageUrl ||
                   "https://via.placeholder.com/300x300/000000/FFFFFF?text=Image+not+available"
                 }
                 alt={`Storefront image for ${property.name}`}
@@ -46,7 +47,7 @@ export const PropertiesIndexPage: AppPage = () => {
               <p>{property.description || "N/A"}</p>
 
               <div className="card-actions justify-end">
-                <button className="btn btn-primary">Add to list</button>
+                <AddPropertyToListButton propertyId={property.id} />
               </div>
             </div>
           </div>

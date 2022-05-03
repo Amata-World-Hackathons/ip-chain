@@ -1,3 +1,4 @@
+import { AddPropertyToListButton } from "@src/components/AddPropertyToListButton";
 import { Preloader } from "@src/components/progress/Preloader";
 import { useFirestoreDocument } from "@src/contexts/Firebase";
 import { AppPage } from "@src/types";
@@ -23,9 +24,9 @@ export const PropertyDetailPage: AppPage = () => {
       <section className="prose dark:prose-invert">
         <h1>{property.name}</h1>
 
-        {property.storefrontImageUrl ? (
+        {property.marketplaceImageUrl ? (
           <img
-            src={property.storefrontImageUrl}
+            src={property.marketplaceImageUrl}
             alt={`Image of ${property.name}`}
             className="m-auto my-8"
           />
@@ -41,10 +42,17 @@ export const PropertyDetailPage: AppPage = () => {
       <section className="mt-8 w-full max-w-3xl prose dark:prose-invert p-8 border border-primary rounded-lg">
         <h3>Monetization</h3>
 
-        <p>
-          One time payment of {property.oneTimeFee}{" "}
-          <span className="kbd kbd-xs">NEO</span>
-        </p>
+        {property.monetizationOption === "singlePayment" ? (
+          <p>
+            One time payment of <code>{property.oneTimeFee}</code>
+            <span className="kbd kbd-xs">NEO</span>
+          </p>
+        ) : (
+          <p>
+            Monthly fee of <code>{property.subscriptionFee}</code>
+            <span className="kbd kbd-xs">NEO</span>
+          </p>
+        )}
       </section>
 
       <section className="mt-8 w-full max-w-3xl prose dark:prose-invert p-8 border border-secondary rounded-lg">
@@ -54,7 +62,7 @@ export const PropertyDetailPage: AppPage = () => {
       </section>
 
       <div className="mt-16 flex flex-row justify-end">
-        <button className="btn btn-primary">Add to list</button>
+        <AddPropertyToListButton propertyId={property.id} />
       </div>
     </div>
   );
