@@ -1,5 +1,4 @@
 import classnames from "classnames";
-import firebaseui from "firebaseui";
 import { useEffect, useRef } from "react";
 
 import { legacyApp, legacyFirebase } from "@src/contexts/Firebase";
@@ -9,14 +8,18 @@ export interface AuthModalProps extends React.HTMLAttributes<HTMLDivElement> {
   onClose: () => void;
 }
 
+const authUI =
+  typeof window !== "undefined"
+    ? new (require("firebaseui") as any).auth.AuthUI(
+        legacyFirebase.auth(legacyApp)
+      )
+    : (null as any);
+
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const onCloseRef = useRef(onClose);
   const uiLocationRef = useRef(null);
-  const uiRef = useRef<firebaseui.auth.AuthUI>(null);
 
   useEffect(() => {
-    const firebaseui = require("firebaseui");
-
     const listener = (ev: KeyboardEvent) => {
       if (ev.key === "Escape") {
         ev.stopPropagation();
@@ -26,14 +29,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     };
     window.addEventListener("keydown", listener);
 
-    if (!uiRef.current) {
-      (uiRef as any).current = new firebaseui.auth.AuthUI(
-        legacyFirebase.auth(legacyApp)
-      );
-    }
-
     if (uiLocationRef.current) {
-      uiRef.current!.start(uiLocationRef.current, {
+      authUI.start(uiLocationRef.current, {
         signInSuccessUrl: process.env.NEXT_PUBLIC_BASE_PATH || "/",
         signInOptions: [
           legacyFirebase.auth.GoogleAuthProvider.PROVIDER_ID,

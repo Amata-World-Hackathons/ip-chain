@@ -1,10 +1,13 @@
 import React from "react";
 import Link from "next/link";
 import { PublicDashboardButton } from "@src/components/PublicDashboardButton";
+import { useAuth } from "@src/contexts/Auth";
 
 export const PublicPageLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { user, logout } = useAuth();
+
   return (
     <main className="pb-24">
       <header className="flex flex-row justify-between py-2 px-4">
@@ -36,6 +39,11 @@ export const PublicPageLayout: React.FC<{ children: React.ReactNode }> = ({
 
         <div>
           <PublicDashboardButton />
+          {user ? (
+            <button className="ml-4 btn btn-ghost" onClick={logout}>
+              Signout
+            </button>
+          ) : null}
         </div>
       </header>
 
