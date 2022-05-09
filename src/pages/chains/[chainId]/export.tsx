@@ -7,7 +7,9 @@ import { applyPrivatePageLayout } from "@src/layouts/PrivatePageLayout";
 
 export const ExportTagPage: AppPage = () => {
   const router = useRouter();
-  const { tagId } = router.query as { tagId: string };
+  const { chainId } = router.query as { chainId: string };
+
+  const generatedLink = `https://${window.location.host}/chains/${chainId}`;
 
   return (
     <div className="flex flex-col items-center">
@@ -15,14 +17,19 @@ export const ExportTagPage: AppPage = () => {
         <h1>Export tag</h1>
       </div>
 
-      <QRCode
-        id="qr-code-preview"
-        value={`${window.location.host}/tags/${tagId}`}
-        ecLevel="H"
-      />
+      <QRCode id="qr-code-preview" value={generatedLink} ecLevel="H" />
+
+      <a
+        href={generatedLink}
+        target="_blank"
+        rel="noreferrer nofollow"
+        className="mt-4"
+      >
+        {generatedLink}
+      </a>
 
       <div className="mt-8 flex flex-row justify-end">
-        <Link href={`/tags/${tagId}`}>
+        <Link href={`/chains/${chainId}`}>
           <a className="btn btn-ghost">Back to tag</a>
         </Link>
 

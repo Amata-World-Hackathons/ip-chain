@@ -10,6 +10,7 @@ import { firebaseAuth, useFirestoreDocument } from "./Firebase";
 import AuthModal from "@src/components/auth/AuthModal";
 import { useRouter } from "next/router";
 import { Preloader } from "@src/components/progress/Preloader";
+import { wallet } from "@cityofzion/neon-js";
 
 const signup = (email: string, password: string) => {
   return createUserWithEmailAndPassword(firebaseAuth, email, password);
@@ -19,13 +20,16 @@ const login = (email: string, password: string) => {
   return signInWithEmailAndPassword(firebaseAuth, email, password);
 };
 
-const logout = () => signOut(firebaseAuth);
+const logout = () => signOut(firebaseAuth).then(() => window.location.reload());
 
 interface Profile {
-  name: string;
-  imageUrl: string;
   bio: string;
   saved: string[];
+  imageUrl: string;
+  legalName: string;
+  displayName: string;
+  isComplete: boolean;
+  neoAddress: string;
 }
 
 export interface AuthResult {
@@ -82,7 +86,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value = useMemo(() => {
     return {
       ...result,
-      profile: profile as Profile | undefined,
+      profile: profile
+        ? ({
+            ...(profile as unknown as Profile),
+            isComplete: isProfileComplete(profile as unknown as Profile),
+          } as Profile)
+        : undefined,
+      wallet: profile ? new wallet.Account(profile.neoAddress) : undefined,
       refetchProfile: refetch,
     };
   }, [result, profile, refetch]);
@@ -143,3 +153,7 @@ export const MustAuthProvider: React.FC<MustAuthProviderProps> = ({
     </MustAuthContext.Provider>
   );
 };
+
+export function isProfileComplete(profile?: Partial<Profile>): boolean {
+  return !!(profile?.legalName && profile?.neoAddress);
+}

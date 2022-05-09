@@ -37,10 +37,10 @@ function createFormField<N, T extends HTMLAttributes<N>>(
     const { error } = getFieldState(name);
 
     const finalProps = {
-      className: classNames(inputClassname, {
+      className: classNames("input-bordered", inputClassname, {
         // input: inputProps.type !== "textarea",
         // textarea: inputProps.type === "textarea",
-        "input-bordered input-error": !!error,
+        "input-error": !!error,
       }),
       ...register(name, registerOptions),
       ...inputProps,

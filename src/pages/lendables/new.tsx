@@ -3,15 +3,17 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { AppPage } from "@src/types";
 import { applyPrivatePageLayout } from "@src/layouts/PrivatePageLayout";
-import { useFirestore } from "@src/contexts/Firebase";
+import { useFirestore, useFirestoreCollection } from "@src/contexts/Firebase";
 import { addDoc, collection } from "firebase/firestore";
 import classNames from "classnames";
 import FormField, { TextareaFormField } from "@src/components/forms/FormField";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "@src/contexts/Auth";
+import ReactMarkdown from "react-markdown";
+import { COLLECTION_LENDABLES, PLACEHOLDER_IMAGE_SRC } from "@src/constants";
 
-export const NewPropertyPage: AppPage = () => {
+export const NewLendablePage: AppPage = () => {
   const db = useFirestore();
   const router = useRouter();
   const { user } = useAuth();
@@ -25,7 +27,7 @@ export const NewPropertyPage: AppPage = () => {
       monetizationOption: "singlePayment",
       oneTimeFee: "",
       description: "",
-      legalTemplate: "",
+      legalTemplateId: "",
       subscriptionFee: "",
     },
   });
@@ -37,9 +39,16 @@ export const NewPropertyPage: AppPage = () => {
     formState: { isSubmitting },
   } = methods;
 
+  const templatesResult = useFirestoreCollection("templates");
+
   const contentType = watch("contentType");
   const marketplaceImageUrl = watch("marketplaceImageUrl");
   const monetizationOption = watch("monetizationOption");
+  const legalTemplateId = watch("legalTemplateId");
+
+  const templateToUse = templatesResult.data?.find(
+    (template) => template.id === legalTemplateId
+  );
 
   useEffect(() => {
     if (contentType === "text") {
@@ -60,19 +69,19 @@ export const NewPropertyPage: AppPage = () => {
   return (
     <div className="w-full max-w-3xl m-auto">
       <div className="prose dark:prose-invert">
-        <h1>New property</h1>
+        <h1>New Lendable</h1>
       </div>
 
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(async (data) => {
             console.log("DATA SUBMITTED", data);
-            const doc = await addDoc(collection(db, "properties"), {
+            const doc = await addDoc(collection(db, COLLECTION_LENDABLES), {
               ...data,
               userId: user?.uid,
             });
 
-            router.push(`/properties/${doc.id}`);
+            router.push(`/lendables/${doc.id}`);
           })}
         >
           <section className="mt-8 p-8 border border-primary rounded-lg">
@@ -125,7 +134,7 @@ export const NewPropertyPage: AppPage = () => {
                   required: {
                     value: true,
                     message:
-                      "The contents must be provided for embedded content",
+                      "The contents must be provided when using embedded content",
                   },
                 }}
               />
@@ -152,11 +161,8 @@ export const NewPropertyPage: AppPage = () => {
             <h3 className="text-lg mb-4">Marketplace</h3>
 
             <img
-              src={
-                marketplaceImageUrl ||
-                "https://via.placeholder.com/300x300/000000/FFFFFF?text=Image+not+available"
-              }
-              alt="Preview image for new property"
+              src={marketplaceImageUrl || PLACEHOLDER_IMAGE_SRC}
+              alt="Preview image for new lendable"
               className="m-auto my-8"
             />
 
@@ -198,11 +204,11 @@ export const NewPropertyPage: AppPage = () => {
               <label className="label cursor-pointer justify-start">
                 <input
                   type="radio"
-                  value="recurring"
+                  value="royalties"
                   className="radio checked:bg-primary"
                   {...register("monetizationOption")}
                 />
-                <span className="ml-3 label-text">Monthly subscription</span>
+                <span className="ml-3 label-text">Royalties</span>
               </label>
             </div>
 
@@ -228,23 +234,21 @@ export const NewPropertyPage: AppPage = () => {
               />
             ) : null}
 
-            {monetizationOption === "recurring" ? (
+            {monetizationOption === "royalties" ? (
               <FormField
-                name="subscriptionFee"
-                label="Subscription fee"
-                type="number"
-                min={0}
-                step="1"
-                placeholder="e.g. 3"
+                name="royaltyAmount"
+                label="Royalties"
+                type="text"
+                placeholder="e.g. 3.5"
+                hint="Can be any number between 0 and 10"
                 registerOptions={{
                   required: true,
+                  validNum: (v: string) => Number.isFinite(parseFloat(v)),
                 }}
                 wrapInput={(input) => (
                   <>
                     {input}
-                    <span>
-                      <span className="kbd kbd-xs">NEO</span> / month
-                    </span>
+                    <span>%</span>
                   </>
                 )}
               />
@@ -260,8 +264,9 @@ export const NewPropertyPage: AppPage = () => {
               </label>
 
               <select
+                disabled={templatesResult.loading}
                 className="select w-full max-w-sm"
-                {...register("legalTemplate", {
+                {...register("legalTemplateId", {
                   required: true,
                 })}
               >
@@ -269,10 +274,23 @@ export const NewPropertyPage: AppPage = () => {
                   Pick one
                 </option>
 
-                <option value="1">Legal template 1</option>
-                <option value="2">Legal template 2</option>
+                {(templatesResult.data || []).map((template) => (
+                  <option key={template.id} value={template.id}>
+                    {template.displayName}
+                  </option>
+                ))}
               </select>
             </div>
+
+            {templateToUse ? (
+              <div className="mt-8">
+                <p className="mb-2">Preview:</p>
+
+                <ReactMarkdown className="prose bg-white border border-accent p-4 rounded-md">
+                  {templateToUse.contents}
+                </ReactMarkdown>
+              </div>
+            ) : null}
           </section>
 
           <div className="mt-8 flex flex-row justify-end">
@@ -285,7 +303,7 @@ export const NewPropertyPage: AppPage = () => {
                 loading: isSubmitting,
               })}
             >
-              Create property
+              Create lendable
             </button>
           </div>
         </form>
@@ -294,6 +312,6 @@ export const NewPropertyPage: AppPage = () => {
   );
 };
 
-NewPropertyPage.applyLayout = applyPrivatePageLayout;
+NewLendablePage.applyLayout = applyPrivatePageLayout;
 
-export default NewPropertyPage;
+export default NewLendablePage;

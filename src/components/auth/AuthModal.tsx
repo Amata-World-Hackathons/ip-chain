@@ -31,7 +31,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
     if (uiLocationRef.current) {
       authUI.start(uiLocationRef.current, {
-        signInSuccessUrl: process.env.NEXT_PUBLIC_BASE_PATH || "/",
+        signInSuccessUrl: `${
+          process.env.NEXT_PUBLIC_BASE_PATH || ""
+        }/account/profile`,
         signInOptions: [
           legacyFirebase.auth.GoogleAuthProvider.PROVIDER_ID,
           legacyFirebase.auth.EmailAuthProvider.PROVIDER_ID,
@@ -60,7 +62,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       onClick={() => onClose()}
     >
       <div
-        className="w-xl relative shadow-md shadow-cyan-600 p-8 border-2 border-cyan-600"
+        className="w-xl relative bg-slate-300 shadow-md shadow-cyan-600 p-8 border-2 border-cyan-600"
         onClick={(e) => e.stopPropagation()}
       >
         <h2>Login to continue</h2>

@@ -1,4 +1,5 @@
 import FormField, { TextareaFormField } from "@src/components/forms/FormField";
+import { COLLECTION_CHAINS, COLLECTION_LENDABLES } from "@src/constants";
 import { useMustAuth } from "@src/contexts/Auth";
 import { useFirestore, useFirestoreCollection } from "@src/contexts/Firebase";
 import { applyPrivatePageLayout } from "@src/layouts/PrivatePageLayout";
@@ -9,12 +10,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 
+import styles from "@src/utils.module.css";
+
 export const NewTagPage: AppPage = () => {
   const db = useFirestore();
   const router = useRouter();
   const methods = useForm({ mode: "all" });
-  const { user, profile } = useMustAuth();
-  const result = useFirestoreCollection("properties");
+  const { user } = useMustAuth();
+  const result = useFirestoreCollection(COLLECTION_LENDABLES);
   const {
     control,
     handleSubmit,
@@ -23,15 +26,17 @@ export const NewTagPage: AppPage = () => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "properties",
+    name: "lendables",
   });
 
-  const properties = result.data || [];
+  const lendables = (result.data || []).filter((lendable) => {
+    return !fields.some((field: any) => field.lendable.id === lendable.id);
+  });
 
   return (
     <div className="w-full max-w-3xl m-auto">
       <div className="prose dark:prose-invert">
-        <h1>New tag</h1>
+        <h1>New IP Chain</h1>
       </div>
 
       <FormProvider {...methods}>
@@ -39,18 +44,18 @@ export const NewTagPage: AppPage = () => {
           onSubmit={handleSubmit(async (data) => {
             console.log("DATA SUBMITTED", data);
 
-            const { properties, ...submittedAsIs } = data;
+            const { lendables, ...submittedAsIs } = data;
 
-            const doc = await addDoc(collection(db, "tags"), {
+            const doc = await addDoc(collection(db, COLLECTION_CHAINS), {
               ...submittedAsIs,
               userId: user.uid,
-              properties: properties.map(({ property }: any) => ({
-                ipChainId: property.id,
-                blockchainAddress: property.id,
+              lendables: lendables.map(({ lendable }: any) => ({
+                ipChainId: lendable.id,
+                blockchainAddress: lendable.id,
               })),
             });
 
-            router.push(`/tags/${doc.id}`);
+            router.push(`/chains/${doc.id}`);
           })}
         >
           <section className="mt-8 p-8 border border-primary rounded-lg">
@@ -63,45 +68,37 @@ export const NewTagPage: AppPage = () => {
               }}
             />
 
-            <FormField
-              className="mt-4 max-w-sm"
-              name="contentUrl"
-              label="Link to content"
-              placeholder="e.g. https://yahoo.com"
-              registerOptions={{
-                required: {
-                  value: true,
-                  message: "A link to the content must be provided",
-                },
-              }}
-            />
-
             <TextareaFormField
               name="description"
               label="Description"
               className="mt-4"
-              showOptionalLabel
+              registerOptions={{
+                required: {
+                  value: true,
+                  message: "A description of the content is required",
+                },
+              }}
             />
 
             <div className="divider"></div>
 
             <div className="flex flex-col">
-              <h3 className="text-lg mb-4">Properties used</h3>
-              <p className="text-sm text-slate-300">
+              <h3 className="text-lg mb-4">Lendables used</h3>
+              <p className="text-sm text-slate-700">
                 Give back to the creators that made this work possible
               </p>
 
               {fields.map((field: any, index) => (
                 <div key={field.id} className="mt-4 form-control">
                   <a
-                    href={`/properties/${field.property.id}`}
+                    href={`/lendables/${field.lendable.id}`}
                     target="_blank"
                     rel="noreferrer"
                     className="link"
                   >
-                    {field.property.name}
+                    {field.lendable.name}
                   </a>
-                  {/* {field.property.monetization.map((m: any, idx: number) => (
+                  {/* {field.lendable.monetization.map((m: any, idx: number) => (
                     <label
                       key={m.option}
                       className="label cursor-pointer justify-start"
@@ -111,7 +108,7 @@ export const NewTagPage: AppPage = () => {
                         className="radio mr-4"
                         defaultChecked={idx === 0}
                         {...register(
-                          `properties.${index}.monetization.${m.option}`
+                          `lendables.${index}.monetization.${m.option}`
                         )}
                       />
                     </label>
@@ -125,7 +122,7 @@ export const NewTagPage: AppPage = () => {
                   className="mt-4 btn btn-ghost modal-button"
                 >
                   <span className="material-icons">add_circle_outline</span>
-                  &nbsp; Add property
+                  &nbsp; Add Lendable
                 </label>
 
                 <input
@@ -148,40 +145,51 @@ export const NewTagPage: AppPage = () => {
                     <h3 className="font-bold text-lg">Choose from options</h3>
 
                     <ul className="flex-1 overflow-y-auto">
-                      {properties.map((property) => (
+                      {lendables.map((lendable) => (
                         <li
-                          key={property.id}
-                          className="mt-4 card card-side bg-stone-800"
+                          key={lendable.id}
+                          className="mt-4 card card-side bg-slate-100"
                         >
-                          <figure className="w-32 bg-stone-700 overflow-hidden">
+                          <figure className="w-32 bg-slate-300 overflow-hidden flex-shrink-0">
                             <img
                               src={
-                                property.marketplaceImageUrl ||
+                                lendable.marketplaceImageUrl ||
                                 "https://via.placeholder.com/300x300/000000/FFFFFF?text=Image+not+available"
                               }
-                              alt={`Preview of ${property.name}`}
+                              alt={`Preview of ${lendable.name}`}
                             />
                           </figure>
 
                           <div className="card-body">
-                            <h4 className="card-title">
-                              {property.name}
-                              {/* {prefResult.data?.list.includes(lendable.id) ? (
+                            <div className="flex-1">
+                              <h4 className="card-title">
+                                <a
+                                  href={`/lendables/${lendable.id}`}
+                                  target="_blank"
+                                  rel="noreferrer nofollow"
+                                  className="link link-primary"
+                                >
+                                  {lendable.name}
+                                </a>
+                                {/* {prefResult.data?.list.includes(lendable.id) ? (
                                 <div className="badge badge-secondary">
                                   In list
                                 </div>
                               ) : null} */}
-                            </h4>
+                              </h4>
 
-                            {property.description ? (
-                              <p>{property.description}</p>
-                            ) : null}
+                              {lendable.description ? (
+                                <p className={styles["long-text-preview"]}>
+                                  {lendable.description}
+                                </p>
+                              ) : null}
+                            </div>
 
                             <div className="card-actions justify-end">
                               <label
                                 htmlFor="new-derivation-modal"
                                 className="btn btn-primary btn-sm"
-                                onClick={() => append({ property })}
+                                onClick={() => append({ lendable })}
                               >
                                 Use
                               </label>
@@ -216,7 +224,7 @@ export const NewTagPage: AppPage = () => {
                 loading: isSubmitting,
               })}
             >
-              Create tag
+              Create IP chain
             </button>
           </div>
         </form>

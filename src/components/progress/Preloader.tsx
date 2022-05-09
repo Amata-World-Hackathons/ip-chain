@@ -6,7 +6,7 @@ export const Preloader: React.FC<React.HTMLAttributes<HTMLDivElement>> = (
   props
 ) => {
   return (
-    <div className="fixed inset-0 bg-stone-900/80 flex flex-col items-center justify-center">
+    <div className="fixed inset-0 bg-slate-100/80 flex flex-col items-center justify-center">
       <div className={classNames(styles["mosaic-loader"], props.className)}>
         <div className={classNames(styles["cell"], styles["d-0"])} />
         <div className={classNames(styles["cell"], styles["d-1"])} />

@@ -4,13 +4,13 @@ import classNames from "classnames";
 import { doc, setDoc } from "firebase/firestore";
 import { useCallback } from "react";
 
-export interface AddPropertyToListButtonProps {
-  propertyId: string;
+export interface AddLendableToListButtonProps {
+  lendableId: string;
 }
 
-export const AddPropertyToListButton: React.FC<
-  AddPropertyToListButtonProps
-> = ({ propertyId }) => {
+export const AddLendableToListButton: React.FC<
+  AddLendableToListButtonProps
+> = ({ lendableId }) => {
   const db = useFirestore();
   const { user, profile, showAuthModal, refetchProfile } = useAuth();
 
@@ -18,18 +18,18 @@ export const AddPropertyToListButton: React.FC<
     if (!user) {
       showAuthModal!();
     } else if (profile) {
-      const saved = (profile.saved || []).includes(propertyId)
-        ? profile.saved.filter((a) => a !== propertyId)
-        : (profile.saved || []).concat(propertyId);
+      const saved = (profile.saved || []).includes(lendableId)
+        ? profile.saved.filter((a) => a !== lendableId)
+        : (profile.saved || []).concat(lendableId);
 
       setDoc(doc(db, "profiles", user!.uid), {
         ...profile,
         saved,
       }).then(refetchProfile);
     }
-  }, [showAuthModal, user, propertyId, db, profile, refetchProfile]);
+  }, [showAuthModal, user, lendableId, db, profile, refetchProfile]);
 
-  const isSaved = profile?.saved?.includes(propertyId);
+  const isSaved = profile?.saved?.includes(lendableId);
 
   return (
     <button
@@ -39,7 +39,10 @@ export const AddPropertyToListButton: React.FC<
       })}
       onClick={onClick}
     >
-      {isSaved ? "Added" : "Save to list"}
+      {isSaved ? (
+        <span className="material-icons mr-2">check_circle</span>
+      ) : null}
+      {isSaved ? "Saved" : "Save to list"}
     </button>
   );
 };

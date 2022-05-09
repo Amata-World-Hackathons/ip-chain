@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { PublicDashboardButton } from "@src/components/PublicDashboardButton";
 import { useAuth } from "@src/contexts/Auth";
 
@@ -10,39 +11,35 @@ export const PublicPageLayout: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <main className="pb-24">
-      <header className="flex flex-row justify-between py-2 px-4">
-        <div>
+      <header className="flex flex-row justify-between pr-4 bg-primary mb-8">
+        <div className="flex flex-row items-center">
           <Link href="/">
-            <a className="btn btn-ghost">Home</a>
+            <a className="relative inline-block w-24 h-16">
+              <Image src="/ip-chain-logo.jpg" alt="logo image" layout="fill" />
+            </a>
           </Link>
-          <div className="dropdown ml-4">
-            <label tabIndex={0} htmlFor="" className="btn">
-              Explore
-            </label>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu shadow bg-stone-800 rounded-box w-52"
-            >
-              <li>
-                <Link href="/tags">
-                  <a>Tags</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/properties">
-                  <a>Properties</a>
-                </Link>
-              </li>
-            </ul>
-          </div>
+
+          <Link href="/lendables">
+            <a className="ml-4 btn btn-ghost">Lendables</a>
+          </Link>
+
+          <Link href="/">
+            <a className="ml-4 btn btn-ghost">IP Chains</a>
+          </Link>
         </div>
 
-        <div>
+        <div className="flex flex-row items-center">
           <PublicDashboardButton />
           {user ? (
-            <button className="ml-4 btn btn-ghost" onClick={logout}>
-              Signout
-            </button>
+            <>
+              <Link href="/account/profile">
+                <a className="ml-4 btn btn-ghost">Profile</a>
+              </Link>
+
+              <button className="ml-4 btn btn-ghost" onClick={logout}>
+                Signout
+              </button>
+            </>
           ) : null}
         </div>
       </header>

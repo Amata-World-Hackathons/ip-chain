@@ -4,8 +4,8 @@ import { AppPage } from "@src/types";
 
 export const NotFoundPage: AppPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center w-screen h-screen bg-black">
-      <section className="prose dark:prose-invert">
+    <div className="flex flex-col items-center justify-center w-screen h-screen bg-slate-50">
+      <section className="prose">
         <h1>You have discovered the Abyss</h1>
         <p>
           It is not safe here, quickly{" "}
