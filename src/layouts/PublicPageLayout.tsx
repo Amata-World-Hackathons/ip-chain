@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { PublicDashboardButton } from "@src/components/PublicDashboardButton";
 import { useAuth } from "@src/contexts/Auth";
 
@@ -15,7 +14,7 @@ export const PublicPageLayout: React.FC<{ children: React.ReactNode }> = ({
         <div className="flex flex-row items-center">
           <Link href="/">
             <a className="relative inline-block w-24 h-16">
-              <Image src="/ip-chain-logo.jpg" alt="logo image" layout="fill" />
+              <img src="/ip-chain-logo.jpg" alt="logo image" />
             </a>
           </Link>
 
