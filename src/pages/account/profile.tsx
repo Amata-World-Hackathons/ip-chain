@@ -68,8 +68,6 @@ export const AccountProfilePage: AppPage = () => {
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(async (data) => {
-            console.log("DATA SUBMITTED", data);
-
             await setDoc(doc(db, "profiles", user!.uid), {
               ...profile,
               ...data,

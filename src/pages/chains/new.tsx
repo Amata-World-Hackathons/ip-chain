@@ -42,8 +42,6 @@ export const NewTagPage: AppPage = () => {
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(async (data) => {
-            console.log("DATA SUBMITTED", data);
-
             const { lendables, ...submittedAsIs } = data;
 
             const doc = await addDoc(collection(db, COLLECTION_CHAINS), {

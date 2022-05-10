@@ -75,7 +75,6 @@ export const NewLendablePage: AppPage = () => {
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(async (data) => {
-            console.log("DATA SUBMITTED", data);
             const doc = await addDoc(collection(db, COLLECTION_LENDABLES), {
               ...data,
               userId: user?.uid,

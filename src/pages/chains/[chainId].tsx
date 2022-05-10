@@ -13,7 +13,6 @@ import { AppPage } from "@src/types";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { userInfo } from "os";
 
 export const ChainDetailpage: AppPage = () => {
   const router = useRouter();
@@ -28,12 +27,10 @@ export const ChainDetailpage: AppPage = () => {
   const chain = result.data!;
 
   const lendables = chain.lendables
-    .map((lendable) => {
+    .map((lendable: any) => {
       return lendablesResult.data?.find((l) => l.id === lendable.ipChainId);
     })
-    .filter((a) => a);
-
-  console.log("LEN", lendables, chain.lendables);
+    .filter((a: any) => a);
 
   return (
     <div className="w-full max-w-3xl m-auto">
